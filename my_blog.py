@@ -87,6 +87,19 @@ class Blog:
         else:
             print(f'Post with an ID of {post_id} does not exist')
 
+    def delete_post(self, post_id):
+        post = self._get_post_from_id(post_id)
+        if post:
+            if self.current_user is not None and self.current_user == post.author:
+                self.posts.remove(post)
+                (f"{post.title()} has been deleted")
+            elif self.current_user is not None and self.current_user != post.author:
+                print("You do not have permission to delete this post, dood")
+            else: 
+                print("You must be logged in to perform this action")
+        else:
+            print(f'Post with an ID of {post_id} does not exist')
+
 class User:
     id_counter = 1
 
@@ -167,9 +180,9 @@ def run_blog():
                 post_id = input('What is the id of the post you want to view? ')
                 my_blog.view_post(post_id)
         else:
-            print("1. Log Out\n2. Create post\n3. View All Posts\n4. View single post\n5. Edit a post")
+            print("1. Log Out\n2. Create post\n3. View All Posts\n4. View single post\n5. Edit a post\n6. Delete a post")
             to_do = input("Which option would you like to choose?")
-            while to_do not in {'1', '2', '3', '4', '5'}:
+            while to_do not in {'1', '2', '3', '4', '5', '6'}:
                 to_do = input('Invalid option. Please choose 1. 2. 3. 4. or 5.')
             if to_do == '1':
                 my_blog.log_user_out()
@@ -183,6 +196,9 @@ def run_blog():
             elif to_do == '5':
                 post_id = input("What is the id of the post you would like to edit? ")
                 my_blog.edit_post(post_id)
+            elif to_do == '6':
+                post_id = input("What is the id of the post you would like to delete? ")
+                my_blog.delete_post(post_id)
 
 run_blog()
                 
