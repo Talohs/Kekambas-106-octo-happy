@@ -4,6 +4,12 @@ class Blog:
         self.posts = []
         self.current_user = None
 
+    def _get_post_from_id(self, post_id):
+        for post in self.posts:
+            if post.id == int(post_id):
+                return post
+        return None
+
     def create_new_user(self):
         username = input("Please enter a user name:")
         if username in {u.username for u in self.users}:
@@ -46,6 +52,13 @@ class Blog:
         else:
             print("There are currently no posts for this blog")
 
+    def view_post(self, post_id):
+        post = self._get_post_from_id(post_id)
+        if post:
+            print(post)
+        else:
+            print(f'Post with an ID of {post_id} does not exist')
+
 class User:
     id_counter = 1
 
@@ -62,7 +75,8 @@ class User:
         return f"<User {self.id}{self.username}>"
 
     def check_password(self, password_guess):
-        self.password = password_guess[::-2]
+        return self.password == password_guess[::-2]
+        
         
 
 class Post:
@@ -94,9 +108,16 @@ class Post:
 
 def run_blog():
     my_blog = Blog()
+
+    initial_user = User('DH', 'ansbury')
+    my_blog.users.add(initial_user)
+    initial_post = Post('Pre-Loaded', 'This post was preloaded', initial_user)
+    my_blog.posts.append(initial_post)
+
+
     while True:
         if my_blog.current_user is None:
-            print("1. Signup\n2. Sign in\n3. View all posts\n5.Quit")
+            print("1. Signup\n2. Sign in\n3. View all posts\n4. View single post\n5. Quit")
             to_do = input('Which option would you like to do?')
             while to_do not in {'1', '2', '3', '5'}:
                 to_do = input('Invalid option. Please choose 1 or 5.')
@@ -110,17 +131,23 @@ def run_blog():
                 my_blog.log_user_in()
             elif to_do == '3':
                 my_blog.view_posts()
+            elif to_do == '4':
+                post_id = input('What is the id of the post you want to view? ')
+                my_blog.view_post(post_id)
         else:
-            print("1. Log Out\n2. Logout")
+            print("1. Log Out\n2. Create post\n3. View All Posts\n4. View single post")
             to_do = input("Which option would you like to choose?")
-            while to_do not in {'1', '2', '3'}:
-                to_do = input('Invalid option. Please choose 1. 2. or 3.')
+            while to_do not in {'1', '2', '3', '4'}:
+                to_do = input('Invalid option. Please choose 1. 2. 3. or 4.')
             if to_do == '1':
                 my_blog.log_user_out()
             elif to_do == '2':
                 my_blog.create_post()
             elif to_do == '3':
                 my_blog.view_posts()
+            elif to_do == '4':
+                post_id = input('What is the id of the post you want to view? ')
+                my_blog.view_post(post_id)
 
 run_blog()
                 
